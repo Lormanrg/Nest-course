@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -9,12 +8,10 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
-import { error } from 'console';
+
 import { CarsService } from './cars.service';
-import { CreateCarDto } from './dto/create-car.dto';
+import { CreateCarDto, UpdateCarDto } from '../cars/dto/index.dto';
 
 @Controller('cars')
 // @UsePipes(ValidationPipe)
@@ -36,8 +33,11 @@ export class CarsController {
   }
 
   @Patch(':id')
-  updatedCar(@Param('id') id: number, @Body() body: any) {
-    return body;
+  updatedCar(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCarDto: UpdateCarDto,
+  ) {
+    return this.carsService.updateCar(id, updateCarDto);
   }
 
   @Delete(':id')

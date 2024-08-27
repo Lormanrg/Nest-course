@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import { v4 as uuid } from 'uuid';
-import { CreateCarDto } from './dto/create-car.dto';
+import { CreateCarDto, UpdateCarDto } from './dto/index.dto';
 
 @Injectable()
 export class CarsService {
@@ -37,6 +37,7 @@ export class CarsService {
 
     return car;
   }
+
   create(createCarDto: CreateCarDto) {
     const car: Car = {
       id: uuid(),
@@ -46,5 +47,22 @@ export class CarsService {
     this.cars.push(car);
 
     return car;
+  }
+
+  updateCar(id: string, updateCarDto: UpdateCarDto) {
+    let carDB = this.findOneById(id);
+
+    this.cars = this.cars.map((car) => {
+      if (car.id === id) {
+        carDB = {
+          ...carDB,
+          ...updateCarDto,
+          id,
+        };
+        return carDB;
+      }
+      return car;
+    });
+    return carDB;
   }
 }
